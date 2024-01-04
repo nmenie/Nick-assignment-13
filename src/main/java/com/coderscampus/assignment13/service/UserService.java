@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,11 @@ public class UserService {
 	private UserRepository userRepo;
 	@Autowired
 	private AccountRepository accountRepo;
+	
+	   @Transactional
+	    public void saveAccount(Account account) {
+	        accountRepo.save(account);
+	    }
 	
 	public List<User> findByUsername(String username) {
 		return userRepo.findByUsername(username);
@@ -70,4 +77,11 @@ public class UserService {
 	public void delete(Long userId) {
 		userRepo.deleteById(userId);
 	}
+	
+	 public List<Account> getAccounts(Long userId) {
+	        User user = findById(userId); 
+	        return user.getAccounts();
+	    }
+
+	
 }
