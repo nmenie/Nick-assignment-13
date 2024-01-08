@@ -8,7 +8,7 @@
 <body>
 	<h1>Users</h1>
 
-	<div th:if="${#lists.size(users) == 1}">
+	<div th:if="${users != null and #lists.size(users) == 1}">
 		<form action="" method="post">
            
 
@@ -67,6 +67,7 @@
 			<!-- Add more details about the account here if needed -->
 		</div>
 		
+		
 		<form th:action="@{/users/{userId}/accounts(userId=${user.userId})}" method="post">
 			<input type="submit" value="Create New Account" />
 		</form>
@@ -102,22 +103,12 @@
 		<span th:text="${user.name}"></span><br />
 		<span th:text="${user.password}"></span><br />
 
-		<!-- Create clickable links for account types -->
-		<div th:each="account : ${user.accounts}">
-			<span>
-
-				<span th:if="${account.accountName == 'Checking'}">
-					<a
-						th:href="@{/accountInfo/{userId}/checking(userId=${user.userId}, accountId=${account.accountId})}">Checking</a>
-				</span>
-				<!-- Display "Savings" if it's a savings account -->
-				<span th:if="${account.accountName == 'Savings'}">
-					<a
-						th:href="@{/accountInfo/{userId}/savings(userId=${user.userId}, accountId=${account.accountId})}">Savings</a>
-				</span>
-			</span>
-			<br />
-		</div>
+	   <!-- Create clickable links for each account -->
+	   <div th:each="account : ${user.accounts}", style="margin-top: 10px;">
+		<a th:href="@{/users/{userId}/accounts/{accountId}(userId=${user.userId},accountId=${account.accountId})}">
+			<span th:text="${account.accountName}"></span>
+		</a><br />
+	</div>
 
 		
 

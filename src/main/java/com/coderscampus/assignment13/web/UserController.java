@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.coderscampus.assignment13.domain.Account;
+import com.coderscampus.assignment13.domain.Address;
 import com.coderscampus.assignment13.domain.User;
 import com.coderscampus.assignment13.service.UserService;
 
@@ -59,10 +61,24 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/{userId}")
-	public String postOneUser (User user) {
-		userService.saveUser(user);
-		return "redirect:/users/"+user.getUserId();
+	public String postOneUser(User user) {
+	    User foundUser = userService.findById(user.getUserId());
+	    Address userAddress = user.getAddress();
+	    
+	    userAddress.setUser(foundUser);
+	    userAddress.setUserId(user.getUserId());
+	    foundUser.setName(user.getName());
+	    foundUser.setPassword(user.getPassword());
+	    foundUser.setUsername(user.getUsername());
+	    foundUser.setAddress(userAddress);
+	    
+	    userService.saveUser(foundUser);
+
+	    return "redirect:/users/" + user.getUserId();
 	}
+
+
+
 	
 	@PostMapping("/users/{userId}/delete")
 	public String deleteOneUser (@PathVariable Long userId) {
@@ -93,25 +109,22 @@ public class UserController {
 	 public String createNewAccount(@PathVariable Long userId, ModelMap model) {
 	     User user = userService.findById(userId);
 
-	     // Create a new account with the next account number
-	     int nextAccountNumber = user.getAccounts().size() + 1;
+	     // Create a new account
 	     Account newAccount = new Account();
-	     newAccount.setAccountName("Account #" + nextAccountNumber);
-
-	     // Save the new account
-	     userService.saveAccount(newAccount);  // Save the account first
+	     newAccount.setAccountName("Account #" + (user.getAccounts().size() + 1));
 
 	     // Associate the account with the user
 	     newAccount.getUsers().add(user);
 
-	     // Save the user (including the association with the new account)
-	     userService.saveUser(user);
+	     // Save the new account (including the association with the user)
+	     userService.saveAccount(newAccount);
 
 	     // Update the model
 	     model.put("user", user);
 	     model.put("accounts", user.getAccounts());
 	     return "accounts";
 	 }
+
 
 
 	    @PostMapping("/users/{userId}/accounts/{accountId}")
@@ -139,6 +152,31 @@ public class UserController {
 	        model.put("accounts", user.getAccounts());
 	        return "accounts";
 	    }
+	    
+	    @GetMapping("/users/{userId}/accounts/{accountId}")
+	    public String getAccountDetails(
+	            @PathVariable Long userId,
+	            @PathVariable Long accountId,
+	            ModelMap model) {
+	        User user = userService.findById(userId);
+
+	        // Find the account to display
+	        Optional<Account> optionalAccount = user.getAccounts().stream()
+	                .filter(account -> account.getAccountId().equals(accountId))
+	                .findFirst();
+
+	        if (optionalAccount.isPresent()) {
+	            // Add the account details to the model
+	            model.put("user", user);
+	            model.put("account", optionalAccount.get());
+	            return "account-details"; // Replace with your actual Thymeleaf template
+	        } else {
+	            // Handle account not found, e.g., redirect to an error page
+	            return "redirect:/error";
+	        }
+	    }
+
+
 	
 
 	}

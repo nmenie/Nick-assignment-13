@@ -35,10 +35,11 @@ public class Account {
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
-	@OneToMany(mappedBy = "account", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	@OneToMany(mappedBy = "account", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
 	public List<Transaction> getTransactions() {
-		return transactions;
+	    return transactions;
 	}
+
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
