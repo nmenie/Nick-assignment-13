@@ -5,23 +5,23 @@
 </head>
 <body>
 
-<!-- Display only the selected account -->
+
 <div th:if="${account.accountName != null}">
-    <!-- Display the account name -->
+    
     <h1  th:text="${account.accountName}"></h1>
 
-    <!-- Form to update account name -->
+    
     <form th:action="@{/users/{userId}/accounts/{accountId}(userId=${user.userId},accountId=${account.accountId})}" method="post">
         <label for="accountName">Account name:</label>
-        <!-- Display and allow editing of account name -->
+      
         <input type="text" id="accountName" name="accountName" th:value="${account.accountName}" />
-        <!-- Submit button to save changes -->
+        
         <input type="submit" value="Save Account" />
     </form>
 
     <br/>
 
-    <!-- Link to go back to user's accounts page -->
+    
     <a th:href="@{/users/{userId}(userId=${user.userId})}">Back</a>
 
 </div>
