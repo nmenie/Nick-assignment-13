@@ -56,7 +56,7 @@
 		<hr>
 
 		
-		<div style="margin-bottom:100;">
+		<div style="margin-bottom:10px;">
 			<h2>Accounts</h2>
 		</div>
 		
@@ -68,10 +68,15 @@
 		</div>
 		
 		
-		<form th:action="@{/users/{userId}/accounts(userId=${user.userId})}" method="post">
+		<form th:action="@{/users/{userId}/accounts/(userId=${user.userId})}" method="post">
 			<input type="submit" value="Create New Account" />
 		</form>
 		
+		<div style="margin-top: 10px;">
+			<a th:href="@{/users}">Back</a>
+		</div>
+		
+</div>
 		
 		
 
@@ -79,11 +84,6 @@
 
 
 		
-            <div style="margin-top: 10px;">
-				<a th:href="@{/users}">Back</a>
-			</div>
-			
-	</div>
 
 	
 

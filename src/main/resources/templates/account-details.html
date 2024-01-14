@@ -6,15 +6,15 @@
 <body>
 
 <!-- Display only the selected account -->
-<div th:with="selectedAccount=${user.accounts[0]}">
+<div th:if="${account.accountName != null}">
     <!-- Display the account name -->
-    <h1 th:text="${selectedAccount.accountName}"></h1>
+    <h1 th:text="${account.accountName}"></h1>
 
     <!-- Form to update account name -->
-    <form th:action="@{/users/{userId}/accounts/{accountId}(userId=${user.userId},accountId=${selectedAccount.accountId})}" method="post">
+    <form th:action="@{/users/{userId}/accounts/{accountId}(userId=${user.userId},accountId=${account.accountId})}" method="post">
         <label for="accountName">Account name:</label>
         <!-- Display and allow editing of account name -->
-        <input type="text" id="accountName" name="accountName" th:value="${selectedAccount.accountName}" />
+        <input type="text" id="accountName" name="accountName" th:field="${account.accountName}" />
         <!-- Submit button to save changes -->
         <input type="submit" value="Save Account" />
     </form>
@@ -28,4 +28,8 @@
 
 </body>
 </html>
+
+
+
+
 

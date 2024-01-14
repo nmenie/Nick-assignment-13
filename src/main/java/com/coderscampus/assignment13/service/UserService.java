@@ -73,8 +73,8 @@ public class UserService {
 			savings.setAccountName("Savings Account");
 			savings.getUsers().add(user);
 			
-			user.getAccounts();
-			user.getAccounts();
+			user.getAccounts().add(checking);
+			user.getAccounts().add(savings);
 			accountRepo.save(checking);
 			accountRepo.save(savings);
 		}

@@ -97,31 +97,39 @@ public class UserController {
 	            Account defaultAccount = new Account();
 	            defaultAccount.setAccountName("Account #1");
 	            user.getAccounts().add(defaultAccount);
+				model.put("account", defaultAccount);
 	            userService.saveUser(user);
 	        }
 
+			Account newAccount = new Account();
+			newAccount.setAccountName("Account #" + (user.getAccounts().size() + 1));
+			newAccount.getUsers().add(user);
 	        model.put("user", user);
 	        model.put("accounts", user.getAccounts());
+			model.put("account", newAccount);
+		 	newAccount.getUsers().stream().forEach(System.out::println);
 	        return "accounts";
 	    }
 
 	 @PostMapping("/users/{userId}/accounts")
-	 public String createNewAccount(@PathVariable Long userId, ModelMap model) {
+	 public String createNewAccount(@PathVariable Long userId, ModelMap model, Account account) {
 	     User user = userService.findById(userId);
 
 	     // Create a new account
-	     Account newAccount = new Account();
-	     newAccount.setAccountName("Account #" + (user.getAccounts().size() + 1));
+
+//		 account.setAccountName("Account #" + (user.getAccounts().size() + 1));
 
 	     // Associate the account with the user
-	     newAccount.getUsers().add(user);
+		 account.getUsers().add(user);
+		 user.getAccounts().add(account);
 
 	     // Save the new account (including the association with the user)
-	     userService.saveAccount(newAccount);
-
+	     userService.saveAccount(account);
+			userService.saveUser(user);
 	     // Update the model
 	     model.put("user", user);
 	     model.put("accounts", user.getAccounts());
+		 model.put("account", account);
 	     return "accounts";
 	 }
 
@@ -132,7 +140,8 @@ public class UserController {
 	            @PathVariable Long userId,
 	            @PathVariable Long accountId,
 	            @RequestParam String accountName,
-	            ModelMap model) {
+	            ModelMap model,
+				Account accountOnMap) {
 	        User user = userService.findById(userId);
 
 	        // Find the account to update
@@ -150,6 +159,7 @@ public class UserController {
 	        // Update the model
 	        model.put("user", user);
 	        model.put("accounts", user.getAccounts());
+			model.put("account", optionalAccount.get());
 	        return "accounts";
 	    }
 	    
@@ -165,6 +175,7 @@ public class UserController {
 	                .filter(account -> account.getAccountId().equals(accountId))
 	                .findFirst();
 
+			System.out.println("OPTIONALLLLL: " + optionalAccount.get().getAccountName());
 	        if (optionalAccount.isPresent()) {
 	            // Add the account details to the model
 	            model.put("user", user);
