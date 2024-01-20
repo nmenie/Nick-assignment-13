@@ -42,13 +42,31 @@ public class UserController {
 	@GetMapping("/users")
 	public String getAllUsers (ModelMap model) {
 		Set<User> users = userService.findAll();
-		
+		System.out.println(users);
 		model.put("users", users);
 		if (users.size() == 1) {
 			model.put("user", users.iterator().next());
 		}
 		
 		return "users";
+	}
+	
+	@PostMapping("/users")
+	public String updateOneUser (User user) { 
+		System.out.println(user);
+		 User foundUser = userService.findById(user.getUserId());
+		    Address userAddress = user.getAddress();
+		    System.out.println(user);
+		    userAddress.setUser(foundUser);
+		    userAddress.setUserId(user.getUserId());
+		    foundUser.setName(user.getName());
+		    foundUser.setPassword(user.getPassword());
+		    foundUser.setUsername(user.getUsername());
+		    foundUser.setAddress(userAddress);
+		    
+		    userService.saveUser(foundUser);
+
+		    return "redirect:/users/" + user.getUserId();
 	}
 	
 	@GetMapping("/users/{userId}")
@@ -64,7 +82,7 @@ public class UserController {
 	public String postOneUser(User user) {
 	    User foundUser = userService.findById(user.getUserId());
 	    Address userAddress = user.getAddress();
-	    
+	    System.out.println(user);
 	    userAddress.setUser(foundUser);
 	    userAddress.setUserId(user.getUserId());
 	    foundUser.setName(user.getName());
